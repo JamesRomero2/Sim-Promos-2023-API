@@ -42,4 +42,6 @@ app.get('/sim', async(req, res) => {
   })
 });
 
+app.get('/ping', (req, res, next) => res.status(200).json({message: 'pong'}));
+
 app.listen(process.env.PORT, () => console.log(`Server Running on PORT ${process.env.PORT}`))
