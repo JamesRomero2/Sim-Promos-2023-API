@@ -1,0 +1,17 @@
+{
+	"compilerOptions": {
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"baseUrl": "src",
+		"outDir": "dist",
+		"sourceMap": true,
+		"noImplicitAny": true,
+		"lib": [
+			"es5", "es6", "dom", "dom.iterable"
+		]
+	},
+	"include": [
+		"src/global.d.ts",
+		"src/**/*"
+	]
+}
