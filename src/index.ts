@@ -1,16 +1,15 @@
 import dotenv from 'dotenv';
 import express, {Express} from 'express';
-import { SimLoad } from 'types';
-import controller from './controller/PromoScraper'
-import {redis} from './lib/redis';
+import simRoutes from './routes/SimRoutes';
+import { Request, Response, NextFunction } from 'express';
 
-const app : Express = express();
+const app: Express = express();
 dotenv.config();
 
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 
@@ -21,27 +20,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/sim', async(req, res) => {
-  redis.get('sim', async (err, cacheData) => {
-    if (err) throw err;
-    if(cacheData) {
-      res.send(JSON.parse(cacheData));
-    } else {
-      const telcoLoad: SimLoad[] = [];
-      const smart = await controller.scrapeSmartPromos();
-      const sun = await controller.scrapeSunPromos();
-      const tnt = await controller.scrapeTNTPromos();
-      const globe = await controller.scrapeGlobePromos();
-      const tm = await controller.scrapeTMPromos();
+app.get('/', (req: Request, res: Response, next: NextFunction) => res.status(200).json("Go to /sim route to get all data | To go to different telco use the route /sim/[telco] | Ex. http://localhost:8888/sim/sun"))
 
-      telcoLoad.push(...smart, ...sun, ...tnt, ...globe, ...tm);
+app.use('/sim', simRoutes);
 
-      redis.setex('sim', 3600, JSON.stringify(telcoLoad));
-      res.send(telcoLoad);
-    }
-  })
-});
-
-app.get('/ping', (req, res, next) => res.status(200).json({message: 'pong'}));
+app.get('/ping', (req: Request, res: Response, next: NextFunction) => res.status(200).json({message: 'pong'}));
 
 app.listen(process.env.PORT, () => console.log(`Server Running on PORT ${process.env.PORT}`))

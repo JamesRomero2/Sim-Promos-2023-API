@@ -2,6 +2,17 @@ import { SimLoad } from 'types';
 import { load } from 'cheerio';
 import axios from 'axios';
 
+async function scrapeAllPromo() {
+  const promo: SimLoad[] = [];
+    const smart = await scrapeSmartPromos();
+    const sun = await scrapeSunPromos();
+    const tnt = await scrapeTNTPromos();
+    const globe = await scrapeGlobePromos();
+    const tm = await scrapeTMPromos();
+    promo.push(...smart, ...sun, ...tnt, ...globe, ...tm);
+    return promo;
+}
+
 async function scrapeSmartPromos() {
   try {
     const promo : SimLoad[] = [];
@@ -10,10 +21,10 @@ async function scrapeSmartPromos() {
     const items = $('.promo-list > .promo-item');
     items.each((i, el) => {
       const Promo = $(el).find('h3 > strong').text();
-      const Description = $(el).find('.promo > li:nth-child(1)').text();
-      const Registration = $(el).find('.promo > li:nth-child(2)').text();
-      const Validity = $(el).find('.promo > li:nth-child(3)').text();
-      const Price = $(el).find('.promo > li:nth-child(4)').text();
+      const Description = $(el).find('.promo > li:nth-child(1)').text().replace('Promo:', "").replace(/\n/g, '').replace(/\+/g, ",").trim();
+      const Registration = $(el).find('.promo > li:nth-child(2)').text().replace("Registration:", "").trim();
+      const Validity = $(el).find('.promo > li:nth-child(3)').text().replace("Validity:", "").trim();
+      const Price = "₱" + $(el).find('.promo > li:nth-child(4)').text().replace("Price:", "").replace("Pesos", "").trim();
       const Sim = "smart";
       promo.push({
         Promo,
@@ -35,13 +46,13 @@ async function scrapeSunPromos() {
     const promo : SimLoad[] = [];
     const getHTML = await axios.get('https://onlineloadingstation.net/sun-promos/')
     const $ = load(getHTML.data);
-    const items = $('.divTableBody > .divTableRow');
+    const items = $('.divTableBody:nth-child(2) > .divTableRow');
     items.each((i, el) => {
-      const Promo = $(el).find('.divTableCell > h3').text();
-      const Description = $(el).find('.load-promos').text();
-      const Registration = $(el).find('.how-to-register').text();
-      const Validity = $(el).find('.promo-validity').text();
-      const Price = $(el).find('.promo-cost').text();
+      const Promo = $(el).find('.divTableCell > h3').text().replace(/\t/g, "");
+      const Description = $(el).find('.promo-feature').text().replace(/\t/g, " ").replace(/\s+/g, " ").trim();
+      const Registration = $(el).find('.how-to-register').text().replace(/\t/g, " ").replace(/\s+/g, " ").trim();
+      const Validity = $(el).find('.promo-validity').text().replace(/\t/g, " ").replace(/\s+/g, " ").replace("Valid for", "").trim();
+      const Price = $(el).find('.promo-cost').text().replace(/\t/g, " ").replace(/\s+/g, " ").replace("only", "").trim();
       const Sim = "sun";
       promo.push({
         Promo,
@@ -66,10 +77,10 @@ async function scrapeTNTPromos() {
     const items = $('.promo-container');
     items.each((i, el) => {
       const Promo = $(el).find('h2').text();
-      const Description = $(el).find('ul > li:nth-child(1)').text();
-      const Registration = $(el).find('ul > li:nth-child(4)').text();
-      const Validity = $(el).find('ul > li:nth-child(3)').text();
-      const Price = $(el).find('ul > li:nth-child(2)').text();
+      const Description = $(el).find('ul > li:nth-child(1)').text().replace("Features:", "").trim();
+      const Registration = $(el).find('ul > li:nth-child(4)').text().replace("How to register:", "").trim();
+      const Validity = $(el).find('ul > li:nth-child(3)').text().replace("Validity:", "").trim();
+      const Price = $(el).find('ul > li:nth-child(2)').text().replace("Price:", "").trim();
       const Sim = "tnt";
       promo.push({
         Promo,
@@ -94,10 +105,10 @@ async function scrapeGlobePromos() {
     const items = $('.promo-item');
     items.each((i, el) => {
       const Promo = $(el).find('h3').text();
-      const Description = $(el).find('ul > li:nth-child(1)').text();
-      const Registration = $(el).find('ul > li:nth-child(2)').text();
-      const Validity = $(el).find('ul > li:nth-child(3)').text();
-      const Price = $(el).find('ul > li:nth-child(4)').text();
+      const Description = $(el).find('ul > li:nth-child(1)').text().replace("Promo:", "").replace(/\n\+/g, '').trim();
+      const Registration = $(el).find('ul > li:nth-child(2)').text().replace("Registration:", "").replace(/\n\+/g, '').replace("REQUIREMENTS:", "").replace("⭬ ", "").replace("\n⭬ ","").trim();
+      const Validity = $(el).find('ul > li:nth-child(3)').text().replace("Validity:", "").replace("Valid for", "").trim();
+      const Price = $(el).find('ul > li:nth-child(4)').text().replace("Price:", "").replace("Costs", "").trim();
       const Sim = "globe";
       promo.push({
         Promo,
@@ -121,11 +132,11 @@ async function scrapeTMPromos() {
     const $  = load(getHTML.data);
     const items = $('.promo-item');
     items.each((i, el) => {
-      const Promo = $(el).find('h3').text();
-      const Description = $(el).find('ul > li:nth-child(1)').text();
-      const Registration = $(el).find('ul > li:nth-child(2)').text();
-      const Validity = $(el).find('ul > li:nth-child(3)').text();
-      const Price = $(el).find('ul > li:nth-child(4)').text();
+      const Promo = $(el).remove('img.emoji').find('h3').text().replace(/[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2580-\u27BF]|\uD83E[\uDD10-\uDDFF]| /g, "").replace(/\u200d/g, "").trim();;
+      const Description = $(el).find('ul > li:nth-child(1)').text().replace("Promo:", "").replace(/\n\+/g, '').trim();
+      const Registration = $(el).find('ul > li:nth-child(2)').text().replace("Registration:", "").replace("Extension:", "").trim();
+      const Validity = $(el).find('ul > li:nth-child(3)').text().replace("Validity:", "").replace("Va;idity:", "").trim();
+      const Price = $(el).find('ul > li:nth-child(4)').text().replace("Price:", "").replace("load", "").trim();
       const Sim = "tm";
       promo.push({
         Promo,
@@ -143,6 +154,7 @@ async function scrapeTMPromos() {
 }
 
 export default {
+  scrapeAllPromo,
   scrapeSmartPromos,
   scrapeSunPromos,
   scrapeTNTPromos,
