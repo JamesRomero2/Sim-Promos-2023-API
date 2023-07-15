@@ -25,7 +25,7 @@ async function scrapeSmartPromos() {
       const Registration = $(el).find('.promo > li:nth-child(2)').text().replace("Registration:", "").trim();
       const Validity = $(el).find('.promo > li:nth-child(3)').text().replace("Validity:", "").trim();
       const Price = "₱" + $(el).find('.promo > li:nth-child(4)').text().replace("Price:", "").replace("Pesos", "").trim();
-      const Sim = "smart";
+      const Sim = "Smart";
       promo.push({
         Promo,
         Description,
@@ -53,7 +53,7 @@ async function scrapeSunPromos() {
       const Registration = $(el).find('.how-to-register').text().replace(/\t/g, " ").replace(/\s+/g, " ").trim();
       const Validity = $(el).find('.promo-validity').text().replace(/\t/g, " ").replace(/\s+/g, " ").replace("Valid for", "").trim();
       const Price = $(el).find('.promo-cost').text().replace(/\t/g, " ").replace(/\s+/g, " ").replace("only", "").trim();
-      const Sim = "sun";
+      const Sim = "Sun";
       promo.push({
         Promo,
         Description,
@@ -81,7 +81,7 @@ async function scrapeTNTPromos() {
       const Registration = $(el).find('ul > li:nth-child(4)').text().replace("How to register:", "").trim();
       const Validity = $(el).find('ul > li:nth-child(3)').text().replace("Validity:", "").trim();
       const Price = $(el).find('ul > li:nth-child(2)').text().replace("Price:", "").trim();
-      const Sim = "tnt";
+      const Sim = "TNT";
       promo.push({
         Promo,
         Description,
@@ -109,7 +109,7 @@ async function scrapeGlobePromos() {
       const Registration = $(el).find('ul > li:nth-child(2)').text().replace("Registration:", "").replace(/\n\+/g, '').replace("REQUIREMENTS:", "").replace("⭬ ", "").replace("\n⭬ ","").trim();
       const Validity = $(el).find('ul > li:nth-child(3)').text().replace("Validity:", "").replace("Valid for", "").trim();
       const Price = $(el).find('ul > li:nth-child(4)').text().replace("Price:", "").replace("Costs", "").trim();
-      const Sim = "globe";
+      const Sim = "Globe";
       promo.push({
         Promo,
         Description,
@@ -137,7 +137,7 @@ async function scrapeTMPromos() {
       const Registration = $(el).find('ul > li:nth-child(2)').text().replace("Registration:", "").replace("Extension:", "").trim();
       const Validity = $(el).find('ul > li:nth-child(3)').text().replace("Validity:", "").replace("Va;idity:", "").trim();
       const Price = $(el).find('ul > li:nth-child(4)').text().replace("Price:", "").replace("load", "").trim();
-      const Sim = "tm";
+      const Sim = "TM";
       promo.push({
         Promo,
         Description,
