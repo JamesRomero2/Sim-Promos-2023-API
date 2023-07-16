@@ -1,3 +1,4 @@
+![Repo Cover](/PHTelcoAPICover.png)
 # Sim Load Packages for Philippines Top Telcom
 This is an API for getting the Sim Promo Packages in the Philippines.
 
